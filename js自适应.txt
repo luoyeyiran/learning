@@ -1,0 +1,21 @@
+<style>
+textarea
+{
+width:100%;
+height:100%;
+}
+</style>
+<textarea name="textarea">
+xxxxx
+</textarea>
+
+overflow的允许属性：auto、visible、hidden
+
+示例：
+
+overflow-x:visible;
+
+overflow-y:visible;
+
+1、用textarea的宽度（widht）和高度（height）来定义textarea的大小；
+2、让滚动条自适应：overflow-y:auto。
