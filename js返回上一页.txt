@@ -1,0 +1,36 @@
+JS后退一页, JS返回上一页代码, JS返回下一页,JS返回第几页,JS页面跳转  
+Javascript 返回上一页:
+1. history.go(-1), 返回两个页面: history.go(-2);
+2. history.back(). 
+3. window.history.forward()返回下一页
+4. window.history.go(返回第几页,也可以使用访问过的URL)  
+ 例:
+<a href="javascript:history.go(-1);">向上一页</a> 
+response.Write("<script language=javascript>")
+response.Write("if(!confirm('完成任务?')){history.back();}")
+response.Write("</script>")
+response.Write("<script language=javascript>history.go(-1);</script>")
+<a href="javascript:history.go(-1);">向上一页</a>
+页面跳转:onclick="window.location.href='index.aspx'"
+P.S.
+小技巧(JS引用JS):
+<script type=text/javascript>
+<!--
+if (typeof SWFObject == "undefined") {
+document.write('<scr' + 'ipt type="text/javascript" src="/scripts/swfobject-1.5.js"></scr' + 'ipt>');}
+//-->
+</script>
+
+	<a class="btn btn-primary" onclick="" href=".">Return</a>点表示上一级URL，两个点表示上两级URL路径
+
+<span style="font-size:14px;"><a href="#">回到最顶端</a></span>  
+
+
+<a href="javascript:void(0);" onclick="js_method()"></a>  
+<a href="javascript:;" onclick="js_method()"></a>  
+<a href="#" onclick="js_method();return false;"></a>  
+
+
+绝对 URL - 指向另一个站点（比如 href="http://www.example.com/index.htm"）
+相对 URL - 指向站点内的某个文件（href="index.htm"）
+锚 URL - 指向页面中的锚（href="#top"）

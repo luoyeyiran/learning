@@ -1,0 +1,19 @@
+导入jar包：import org.apache.commons.beanutils.BeanUtils;
+
+ 	RegionAlarm ra = RegionAlarm.dao.findById(alarmid);
+	AlarmHistory ah = new AlarmHistory();
+	try {
+	//copyProperties(dest,ra)
+            BeanUtils.copyProperties(ah,ra);
+            System.out.println("----------------------ah{}"+ah);
+       // 如果对象里有自增长ID，需要把下面的操作，否则会报错    
+	    ah.setId(null);
+	//如果时间类型是空，不能进行复制，会报null转date错误
+            ah.setCleanTime(new java.sql.Timestamp(System.currentTimeMillis()));
+            ah.save();
+            ra.delete();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }

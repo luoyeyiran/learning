@@ -1,0 +1,28 @@
+package cn.superv.vacp.testsnmp;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+public class OtherTest {
+	 private static SimpleDateFormat sdf1 = new SimpleDateFormat("MMM dd yyyy HH:mm:ss", Locale.US);
+	  private static SimpleDateFormat sdfComm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	  private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
+	public static void main(String[] args) {
+		int year = Calendar.getInstance().get(1);
+		String yearStr = String.valueOf(year);
+		String gettime = "Jul 13 "+yearStr+" 00:10:51";
+		String natStartTime = dateFormat(gettime);
+		System.out.println("--------------natStartTime:"+natStartTime);
+	}
+	public static String dateFormat(String srcDate)
+	  {
+	    String formatDate = "";
+	    try
+	    {
+	      formatDate = sdf2.format(sdf1.parse(srcDate));
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	    return formatDate; }
+}

@@ -1,0 +1,24 @@
+package cn.superv.vacp.testsnmp;
+
+import java.util.List;
+
+import cn.superv.vacp.model.VnfVm;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+
+public class JSONTest {
+	public static void main(String[] args) {
+		String json = "[{\"id\":1,\"status\":\"2\",\"vnf_id\":1,\"name\":\"vnf001-vm001\",\"flavor\":\"adasdfsaf\",\"vim_id\":"
+				+"\"1q2w3e4r\",\"uuid\":\"9e82d8fe-2d22-4a2a-958c-e0daa912f867\",\"host_name\":\"1215466134754\"},{\"id"
+				+"\":2,\"status\":\"2\",\"vnf_id\":1,\"name\":\"vnf002-vm002\",\"flavor\":\"gagaagag\",\"vim_id\":"
+				+"\"1q2w3e4r\",\"uuid\":\"9e82d8fe-2d22-4a2a-958c-e0daa912f868\",\"host_name\":\"3123123132\"}]";
+//		JSONArray  myJsonArray = JSON.parseArray(json);
+		JSONArray myJsonArray = JSONArray.parseArray(json);
+		int id = myJsonArray.getJSONObject(0).getIntValue("id");
+		 List<VnfVm> list = JSON.parseArray(json, VnfVm.class);
+		 System.out.println("------------list{}"+list.toString());
+		System.out.println("------------id{}"+id);
+		System.out.println("myJsonArray{}"+myJsonArray.size());
+	}
+}

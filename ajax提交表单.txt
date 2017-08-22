@@ -1,0 +1,10 @@
+ $.ajax({
+    cache: true,
+    type: "post",
+    url:"backUp",
+    data:$('#backUp').serialize(),
+    async: false,
+    success: function(data) {
+    	window.location.reload();
+    		    }
+    	}); 

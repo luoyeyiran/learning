@@ -1,0 +1,79 @@
+console.log(projectID);网页控制台打印
+$("#projectId").show(); $("#projectId").hide();
+class="form-group"一个输入组
+  function vimIdChange(){	
+    	//projectid下拉框显示
+    	$("#projectId").show();
+    	$.ajax({
+    		url:'getProjectId',
+    		data:{vimId:$("#vimId").val()},
+    		success:function(data){
+    			var projectID=data.projectId;
+    			for(var i=0;i<projectID.length;i++){
+    			  str = str+ ' <option value="'+projectID[i]+'"> '+projectID[i]+'</option>';
+    			}
+    			$("#projectID").html(str);
+    			str ='<option value="">--PLEASE SELECT Projectid--</option>';
+    		}
+    	});
+    	
+	/* 	var opt = {
+				    url: "${ctx}/resource/statistic/selectStatistics",
+				    silent: false,
+				    query:{
+				    	vimId:$("#vimId").val()
+				    }
+			  }; */	
+	//	$("#statistic").bootstrapTable('refresh', opt);
+    }
+
+
+    List<String> list = new ArrayList<String>();
+    	JSONObject parseObject = JSON.parseObject(result);	
+    	JSONArray jsonArray = parseObject.getJSONArray("projects");	
+    	for (int i = 0; i < jsonArray.size(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			System.out.println(jsonObject.get("id"));
+			list.add((String) jsonObject.get("id"));
+		}
+
+
+$('#server').bootstrapTable({
+				height : 738,
+				search : true,  //显示是否有搜索框
+				pagination : true,  //是否分页
+				cache : false,   //设置false禁用ajax数据缓存
+				url : "${ctx}/resource/server/selectServers",
+				sidePagination : "client",//设置在哪里分页，一般设置为"client"
+				pageSize : 15, //页面数据条数
+				pageList : [ 5, 10, 20, 50, 100, 200 ],//设置可供选择的页面数据条数
+				rowStyle : "col-sm-12",
+				striped : true, //设置true会有各行变色效果
+				columns : [ {        //列配置项
+					field : "name",
+					title : "Name",
+					sortable : true
+				}, {
+					field : "OS-EXT-SRV-ATTR:hypervisor_hostname",
+					title : "Host Name",
+					sortable : true
+				}, {
+					field : "flavorName",
+					title : "Flavor Name",
+					sortable : true
+				}, {
+					field : "status",
+					title : "Status",
+					sortable : true
+				}, {
+					title : "Actions",
+					formatter : "actionsFormatter"
+				} ],
+				queryParams : searchByVim
+			});
+
+
+
+  history.go(-1)表示后退与刷新。如数据有改变也随之改变
+  history.back()只是单纯的返回到上一页。
+   <button id="button" class="btn btn-default" onclick="window.history.go(-1)">Return</button>	

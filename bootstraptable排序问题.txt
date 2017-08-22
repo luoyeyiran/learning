@@ -1,0 +1,53 @@
+jsp： var table = $('#vim').bootstrapTable({
+        height: 738,
+        search: true,
+        striped: true,
+        toolbar: "#toolbar",
+        pagination: true,
+//	sortable: true,//可有可无
+//	sortOrder:"asc",//可有可无
+        url: "search",
+        sidePagination: "server",
+        pageSize: 15,
+        pageList: [5,10,15,20,50,100],
+        rowStyle: "col-sm-12",
+        queryParams: customSearch,
+        columns: [
+          {field: "s", checkbox: true},
+          {field: "alarm_id", title: "Warn Number", sortable: true},
+          {field: "type", title: "Warn Type", sortable: true},
+          {field: "severity", title: "Severity", sortable: true},
+          {field: "state", title: "Warn Status", sortable: true,formatter: "statusFormatterVnf"},
+          {field: "timestamp", title: "Event Time", sortable: true,formatter: "startTimeFormatterVnf"},
+          {field: "clean_time", title: "Clean Time", sortable: true},
+          {field: "vnf_id", title: "Vnf Id", sortable: true},
+          //{field: "tenant_username_password", title: "Tenant Username Password", sortable: true},
+          {title: "Actions", align: "center", width: "15%",formatter: "actionsFormatter"}
+        ]
+      });
+
+后台：  String sort = getPara("sort");
+        String order = getPara("order");
+        String params = getPara("param");
+        Integer pageSize = getParaToInt("limit", 15);
+	Integer pageNumber = getParaToInt("offset", 0) / pageSize + 1;
+	String sql;
+	String sql2;
+	if(params==null||"".equals(params)){
+		sql = "select * from region_alarm  order by "+sort+" "+order;
+		sql2 = "select count(*) total from region_alarm  ";
+	}else{
+		sql = "select * from region_alarm where alarm_id like '%"+params
+	 		+"%'  or type like '%"+ params +"%' or severity like '%"+params+"%'"
+	 			+" or state like '%"+params+"%'  order by "+sort+" "+order;
+		sql2 = "select count(*) total from region_alarm where alarm_id like '%"+params
+		 		+"%'  or type like '%"+ params +"%' or severity like '%"+params+"%'"
+		 			+" or state like '%"+params+"%' ";
+		  }
+	 List<Record> list = Db.find(sql+" limit "+(pageNumber-1)*pageSize+","+pageSize);
+	 List<Record> list2 = Db.find(sql2);
+	 Long total = list2.get(0).get("total");
+	 setAttr("rows",list);
+	 setAttr("total", total);
+         renderJson();
+	

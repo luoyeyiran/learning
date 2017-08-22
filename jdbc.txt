@@ -1,0 +1,145 @@
+  //链接O的数据库，存入数据
+    public void storage( List<VnfVm> VnfVmList){
+    	Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null; 
+		try {
+			// 获得MySQL驱动的实例
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			// 获得连接对象(提供：地址，用户名，密码)
+			con = DriverManager
+					.getConnection(
+							"jdbc:mysql://192.168.1.24:3306/vacp_asblab?useUnicode=true&characterEncoding=utf8&useSSL=false",
+							"root", "!PassW0rd");
+			// jdbc:mysql://192.168.1.24:3306/vacp_asblab?useUnicode=true&characterEncoding=utf8&useSSL=false
+			if (!con.isClosed())
+				System.out.println("Successfully connected ");
+			else
+				System.out.println("failed connected");
+
+			// 建立一个Statement，数据库对象
+			st = con.createStatement();
+			con.setAutoCommit(false); //切记:必须设置成手动提交模式,否则每次addBatch都会提交一次,而不是批量提交
+			 ps = con.prepareStatement("insert into vnf_vm(vnf_id,vim_id,uuid,name,flavor,status,host_name) values(?,?,?,?,?,?,?)");  
+			    for(VnfVm ele:VnfVmList){  
+			        ps.setInt(1,ele.getVnfId());  
+			        ps.setString(2, ele.getVimId());  
+			        ps.setString(3, ele.getUuid()); 
+			        ps.setString(4, ele.getName()); 
+			        ps.setString(5, ele.getFlavor()); 
+			        ps.setString(6, ele.getStatus()); 
+			        ps.setString(7, ele.getHostName()); 
+			        ps.addBatch();  
+			        //ps.executeUpdate();  
+			    }  
+			    ps.executeBatch();  
+			    con.commit();  
+//			for(VnfVm ele:VnfVmList){
+//				String sql = "insert into vnf_vm(id,vnf_id,vim_id,uuid,name,flavor,status,host_name) values("+ele.getId()+","+")";
+//				con.prepareStatement(sql, 1);
+////				st.execute("", ele.getId(),ele.getVnfId(),ele.getVimId(),ele.getUuid(),ele.getName(),ele.getFlavor(),ele.getStatus(),ele.getHostName());
+//			}
+//			rs = st.executeQuery("select * from vnfm");
+//			// 读取结果集
+//			while (rs.next()) {
+//				System.out.println("column1:" + rs.getInt(1));
+//				System.out.println("column2:" + rs.getString(2));
+//			}
+			// 关闭链接
+			con.close();
+		} catch (Exception e) {
+			System.err.println("Exception: " + e.getMessage());
+		}
+    }
+
+
+
+
+
+package cn.superv.vacp.testsnmp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.ResultSet;
+
+public class Test {
+	public static void main(String args[]) {
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null; 
+		try {
+			// 获得MySQL驱动的实例
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			// 获得连接对象(提供：地址，用户名，密码)
+			con = DriverManager
+					.getConnection(
+							"jdbc:mysql://192.168.1.24:3306/vacp_asblab?useUnicode=true&characterEncoding=utf8&useSSL=false",
+							"root", "!PassW0rd");
+			// jdbc:mysql://192.168.1.24:3306/vacp_asblab?useUnicode=true&characterEncoding=utf8&useSSL=false
+			if (!con.isClosed())
+				System.out.println("Successfully connected ");
+			else
+				System.out.println("failed connected");
+
+			// 建立一个Statement，数据库对象
+//			st = con.createStatement();
+			
+			con.setAutoCommit(false); //切记:必须设置成手动提交模式,否则每次addBatch都会提交一次,而不是批量提交
+			 ps = con.prepareStatement("insert into vnfm(identity,name,protocol,base_url,client_id,client_secret,grant_type,CBAMURL) values(?,?,?,?,?,?,?,?)");  
+			    for(int i = 0 ; i < 5; i++){  
+//			        ps.setInt(1, 26);  
+			        ps.setString(1, "csdn");  
+			        ps.setString(2, "csdn");
+			        ps.setString(3, "csdn");
+			        ps.setString(4, "csdn");
+			        ps.setInt(5, 9);  
+			        ps.setString(6, "csdn");
+			        ps.setString(7, "csdn");
+			        ps.setString(8, "csdn");
+			        ps.addBatch();  
+			        //ps.executeUpdate();  
+			    }  
+			    ps.executeBatch();  
+			    con.commit();  
+			
+			// 运行SQL查询语句
+			rs = ps.executeQuery("select * from vnfm");
+			// 读取结果集
+			while (rs.next()) {
+				System.out.println("column1:" + rs.getInt(1));
+				System.out.println("column2:" + rs.getString(2));
+				System.out.println("column3:" + rs.getString(3));
+				System.out.println("column4:" + rs.getString(4));
+				System.out.println("column5:" + rs.getString(5));
+				System.out.println("column6:" + rs.getInt(6));
+				System.out.println("column7:" + rs.getString(7));
+				System.out.println("column8:" + rs.getString(8));
+				System.out.println("column9:" + rs.getString(9));
+			}
+			// 关闭链接
+			con.close();
+		} catch (Exception e) {
+			System.err.println("Exception: " + e.getMessage());
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

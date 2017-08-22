@@ -1,0 +1,140 @@
+import org.apache.log4j.Logger;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+
+import com.superv.pmf.common.util.MD5;
+
+
+/***** 新添加的找回密码功能，已发送邮件的方式 *****/
+	public void findPassword() {
+		String loginName = Struts2Utils.getRequest().getParameter("username");
+		String telephone = Struts2Utils.getRequest().getParameter("telephone");
+		try {
+			SendHtmlMail(loginName, telephone);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 以邮件格式发送邮件
+	 */
+	public String SendHtmlMail(String loginName, String telephone)
+			throws IOException {
+		logger.info("****************start BugsAction*****************");
+		PMFUser pmfuser = userService.getPMFUser(loginName,telephone);
+		String address = pmfuser.getEmail();
+//		UserAction ua = new UserAction();
+//		Properties pro = ua.getProperties();
+		Properties pro = new Properties();
+		pro.put("mail.smtp.host", "smtp.exmail.qq.com");
+		pro.put("mail.transport.protocol", "smtp");
+		pro.put("mail.smtp.auth", "true");
+		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
+		Session session = Session.getInstance(pro);
+		try {
+			Long sendEmailTime = System.currentTimeMillis()+3600*1000;
+			String url = "'http://localhost:8080/PMF/jsp/modifyPassword.jsp?param="+sendEmailTime+"'";
+			// 根据session创建一个邮件消息
+			Message messgae = new MimeMessage(session);
+			String send_word = "您好："// http://localhost:8080/PMF/jsp/modifyPassword.jsp
+									// http://pmf.superv.cn/
+					+ "若修改密码，请立即登陆<a  href="+url+">"
+					+ " PMF系统</a>修改密码，本链接一个小时内有效 ";
+			messgae.setFrom(new InternetAddress("superv_PMF@superv.com.cn"));// 设置发送人
+			messgae.setContent(send_word, "text/html; charset=utf-8");// 设置邮件内容
+			messgae.setSubject("修改密码通知");// 设置邮件主题
+			// 设置邮件消息发送的时间
+		//	Date date = new Date();
+			messgae.setSentDate(new Date());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			int week = cal.get(Calendar.DAY_OF_WEEK) - 1;
+			// 设置邮件接收人
+			messgae.setRecipient(Message.RecipientType.TO, new InternetAddress(
+					address));
+			// 发送
+			Transport tran = session.getTransport();
+			tran.connect("smtp.exmail.qq.com", 25, "superv_PMF@superv.com.cn",
+					"supervpmf123");// 连接到PMF邮箱服务器
+			tran.sendMessage(messgae, messgae.getAllRecipients());
+			tran.close();
+
+			logger.info("时间[" + new Date() + "]----->发送完成！");
+			JsonForPMF<PMFUser> json = new JsonForPMF<PMFUser>();
+			json.setSuccess(true);
+			json.setMsg("邮件发送成功");
+			jsonString = JSON.toJSONString(json);
+			
+		} catch (MessagingException ex) {
+			ex.printStackTrace();
+			JsonForPMF<PMFUser> json = new JsonForPMF<PMFUser>();
+			json.setSuccess(true);
+			json.setMsg("邮件发送失败");
+			jsonString = JSON.toJSONString(json);
+		}
+		return "json";
+	}
+
+	/**
+	 * 获得邮件会话属性
+	 */
+	public Properties getProperties() {
+		Properties p = new Properties();
+		p.put("mail.smtp.host", "smtp.exmail.qq.com");// 发送邮件协议
+		p.put("mail.smtp.auth", "true");// 需要验证
+		// p.put("smtp.exmail.qq.com", "113.108.16.119");
+		// p.put("pop.exmail.qq.com", "25");
+		return p;
+	}
+
+	public String modifyPassword(){
+		
+		String loginName = Struts2Utils.getRequest().getParameter("loginName");
+		String telephone = Struts2Utils.getRequest().getParameter("telephone");
+		String password = Struts2Utils.getRequest().getParameter("password");
+		JsonForPMF<PMFUser> json = new JsonForPMF<PMFUser>();
+		try{
+			MD5 getMD5 = new MD5();
+			String ps = getMD5.MD5Encode(password);
+			boolean flag = userService.updatePMFUser(ps,loginName,telephone);
+			if(flag){
+				json.setSuccess(true);
+				json.setMsg("密码修改成功");
+				jsonString = JSON.toJSONString(json);
+			}else{
+				json.setSuccess(true);
+				json.setMsg("密码修改失败");
+				jsonString = JSON.toJSONString(json);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			json.setSuccess(true);
+			json.setMsg("密码修改失败");
+			jsonString = JSON.toJSONString(json);
+		}
+		
+		return "json";
+		
+	}
+	
+	
+	/**** 找回密码功能结束 *******/
+
+//MD5加密密码
+// 登录时对输入的密码加密与数据库比较
+		MD5 getMD5 = new MD5();
+		user.setUserName(username);
+		String ps = getMD5.MD5Encode(pass);
+		user.setUserPasswd(ps);
+
